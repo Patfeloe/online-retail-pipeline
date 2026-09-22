@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: main
+    tables:
+      - name: stg_orders
+        description: "Raw staging table loaded directly from CSV partitions, one row per line item"
+        loaded_at_field: load_date
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 4, period: day}
+
+models:
+  - name: stg_orders_clean
+    description: "Cleaned order lines - cancellations, missing customers, and non-positive amounts removed"
+    columns:
+      - name: invoice_no
+        tests:
+          - not_null
+      - name: stock_code
+        tests:
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+      - name: quantity
+        tests:
+          - not_null
+      - name: unit_price
+        tests:
+          - not_null
