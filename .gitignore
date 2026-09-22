@@ -1,0 +1,22 @@
+# Runtime data & database
+raw/*
+!raw/.gitkeep
+data/*.csv
+!data/sample_online_retail.csv
+warehouse.duckdb
+
+# dbt artifacts
+transform/target/
+transform/logs/
+transform/dbt_packages/
+transform/.user.yml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS/editor cruft
+.DS_Store
+.vscode/
