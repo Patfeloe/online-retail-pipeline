@@ -1,0 +1,15 @@
+name: 'retail_pipeline'
+version: '1.0.0'
+config-version: 2
+
+profile: 'retail_pipeline'
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
+models:
+  retail_pipeline:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
