@@ -1,0 +1,11 @@
+# profiles.yml
+# Points dbt at the same DuckDB file the load step writes to.
+# Requires the dbt-duckdb adapter: pip install dbt-duckdb
+
+retail_pipeline:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../warehouse.duckdb
+      threads: 4
