@@ -1,0 +1,11 @@
+.git
+.gitignore
+__pycache__/
+*.pyc
+raw/
+data/
+warehouse.duckdb
+transform/target/
+transform/logs/
+transform/dbt_packages/
+README.md
