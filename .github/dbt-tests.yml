@@ -1,0 +1,42 @@
+name: Data Quality Checks
+
+# Runs dbt against a small, checked-in sample of raw data on every
+# push/PR - this is what "CI for a data pipeline" looks like: it
+# doesn't test application code, it verifies that the transformation
+# logic still produces data that passes the quality tests.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  dbt-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Extract + load sample date
+        # Uses a small sample file checked into the repo at
+        # data/sample_online_retail.csv, so CI doesn't depend on
+        # downloading the full dataset on every run.
+        run: |
+          python extract/extract_daily.py --date 2011-01-05 --source data/sample_online_retail.csv
+          python load/load_to_staging.py --date 2011-01-05
+
+      - name: dbt run
+        run: dbt run --profiles-dir transform --project-dir transform
+
+      - name: dbt test
+        run: dbt test --profiles-dir transform --project-dir transform
