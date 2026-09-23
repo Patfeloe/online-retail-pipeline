@@ -1,0 +1,37 @@
+# docker-compose.yml
+#
+# Wraps the pipeline in a container with persistent volumes, so raw
+# data, the source CSV, and the DuckDB warehouse all survive between
+# runs instead of disappearing when the container exits.
+#
+# Usage:
+#   docker compose build
+#   docker compose run --rm pipeline --date 2011-01-05
+#
+# The dbt-docs service is optional - it serves the auto-generated
+# data documentation/lineage site dbt builds from the project's
+# schema.yml files.
+
+services:
+  pipeline:
+    build: .
+    volumes:
+      - ./raw:/app/raw
+      - ./data:/app/data
+      - ./warehouse.duckdb:/app/warehouse.duckdb
+    # no `command:` here on purpose - the date is passed at run time,
+    # e.g. `docker compose run --rm pipeline --date 2011-01-05`
+
+  dbt-docs:
+    build: .
+    volumes:
+      - ./raw:/app/raw
+      - ./data:/app/data
+      - ./warehouse.duckdb:/app/warehouse.duckdb
+    entrypoint: ["sh", "-c"]
+    command:
+      - >
+        dbt docs generate --profiles-dir transform --project-dir transform &&
+        dbt docs serve --profiles-dir transform --project-dir transform --host 0.0.0.0 --port 8080
+    ports:
+      - "8080:8080"
