@@ -53,7 +53,7 @@ select * from top_products order by total_revenue desc limit 10;
 ## What's automated
 
 - **CI**: every push runs the pipeline against a small sample dataset and checks that all data quality tests still pass (see `.github/workflows/dbt-tests.yml`)
-- **Docker**: the whole pipeline runs in a container, so it works the same way on any machine
+- **Docker**: the whole pipeline runs in a container, so it works the same way on any machine.
 
 ## What this doesn't cover
 
